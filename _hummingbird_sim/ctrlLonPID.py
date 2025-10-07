@@ -21,8 +21,8 @@ class ctrlLonPID:
         # sample rate of the controller
         self.Ts = P.Ts
         # dirty derivative parameters
-        sigma = 0.05  # cutoff freq for dirty derivative
-        self.beta = (2 * sigma - self.Ts) / (2 * sigma + self.Ts)
+        self.sigma = 0.05  # cutoff freq for dirty derivative
+        self.beta = (2 * self.sigma - self.Ts) / (2 * self.sigma + self.Ts)
         # delayed variables
         self.theta_d1 = 0.
         self.theta_dot = 0.

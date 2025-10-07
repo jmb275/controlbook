@@ -1,8 +1,12 @@
+import matplotlib as mpl
+mpl.use("TkAgg") # do not steal focus when plotting (1st option)
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.widgets import Button
 import numpy as np
 import VTOLParam as P
+
+#mpl.rcParams['figure.raise_window'] = False # do not steal focus when plotting (2nd option)
 
 def exit_program(event):
     exit()
