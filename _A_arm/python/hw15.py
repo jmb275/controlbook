@@ -15,8 +15,9 @@ if __name__ == '__main__':
     # Bode plot for the plant
     fig = plt.figure()
     bode(Plant, dB=dB_flag, margins=False)
-    fig.axes[0].set_title('P(s) for arm')
-
+    plt.suptitle('Single Link Arm Bode Plot')
+    fig.axes[0].legend(['P(s) for arm'])
+    
     # if you want specific values at specific frequencies, you can
     # do the following (but the magnitudes are absolute, not dB)
     mag, phase, omega = bode(Plant, plot=False,
@@ -26,5 +27,6 @@ if __name__ == '__main__':
     print('omega\n:', omega)    
 
     print('Close window to end program')
+
     plt.show()
 

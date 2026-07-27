@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 P10 = ctrlPID()
 
 # flag to define if using dB or absolute scale for M(omega)
-dB_flag = True # False
+dB_flag = False
 
 # Assign plan from previous homework solution
 Plant = P15.Plant
@@ -24,6 +24,6 @@ if __name__ == '__main__':
     fig = plt.figure()
     bode([Plant, Plant*C_pid], omega_limits=[10**(-5), 10**(3)], dB=dB_flag)
     fig.suptitle('Single Link Arm')
-    plt.legend(['P(s)', 'C(s)P(s)'])
+    fig.axes[0].legend(['P(s)', 'C(s)P(s) - Open-loop'])
     print('Close plot window to end program')
     plt.show()

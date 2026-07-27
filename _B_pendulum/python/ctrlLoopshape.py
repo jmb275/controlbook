@@ -16,8 +16,8 @@ class ctrlLoopshape:
             self.control_in = digitalFilter(L_in.C_num, L_in.C_den, P.Ts)
 
     def update(self, z_r, y):
-        z = y[0][0]
-        theta = y[1][0]
+        z = y[0, 0]
+        theta = y[1, 0]
         # prefilter for outer loop
         z_r_filtered = self.prefilter_out.update(z_r)
         # error signal for outer loop
@@ -59,20 +59,20 @@ class transferFunction:
         self.B = np.zeros((n-1, 1))
         self.C = np.zeros((1, n-1))
         for i in range(0, n-1):
-            self.A[0][i] = - den.item(i + 1)
+            self.A[0, i] = - den.item(i + 1)
         for i in range(1, n-1):
-            self.A[i][i - 1] = 1.0
+            self.A[i, i - 1] = 1.0
         if n>1:
-            self.B[0][0] = 1.0
+            self.B[0, 0] = 1.0
         if m == n:
             self.D = num.item(0)
             for i in range(0, n-1):
-                self.C[0][i] = num.item(i+1) \
+                self.C[0, i] = num.item(i+1) \
                                - num.item(0)*den.item(i+1)
         else:
             self.D = 0.0
             for i in range(n-m-1, n-1):
-                self.C[0][i] = num.item(i)
+                self.C[0, i] = num.item(i)
 
     def update(self, u):
         x = self.rk4(u)
@@ -106,8 +106,10 @@ class digitalFilter:
     def update(self, u):
         # update vector with filter inputs (u)
         self.prev_filt_input = np.hstack(([u], self.prev_filt_input[0:-1]))
+        
         # use filter coefficients to calculate new output (y)
         y = self.num_d @ self.prev_filt_input - self.den_d[1:] @ self.prev_filt_output
+        
         # update vector with filter outputs
         self.prev_filt_output = np.hstack(([y], self.prev_filt_output[0:-1]))
         return y

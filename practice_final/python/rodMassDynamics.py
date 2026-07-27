@@ -25,8 +25,8 @@ class rodMassDynamics:
     def f(self, state, u):
         # Return xdot = f(x,u), the system state update equations
         # re-label states for readability
-        theta = state[0][0]
-        thetadot = state[1][0]
+        theta = state[0, 0]
+        thetadot = state[1, 0]
         tau = u
         xdot = np.array([
             [thetadot],
@@ -41,7 +41,7 @@ class rodMassDynamics:
     def h(self):
         # return the output equations
         # could also use input u if needed
-        theta = self.state[0][0]
+        theta = self.state[0, 0]
         y = theta
         return y
 

@@ -38,6 +38,5 @@ F_max =   # Max Force, N
 # Fe =
 
 # mixing matrix
-unmixing = np.array([[1.0, 1.0], [d, -d]]) # converts fl and fr (LR) to force and torque (FT)
-mixing = np.linalg.inv(unmixing) # converts force and torque (FT) to fl and fr (LR) 
-
+unmixing = np.array([[1.0, 1.0], [d, -d]]) # converts fr and fl (RL) to force and torque (FT)
+mixing = np.linalg.inv(unmixing) # converts force and torque (FT) to fr and fl (RL)

@@ -28,22 +28,26 @@ if __name__ == '__main__':
     fig1 = plt.figure()
 
     # this makes two bode plots for open and closed loop
-    bode(Plant * C_pid, dB=dB_flag,
-         label='C(s)P(s) - Open-loop')
-    bode(Plant*C_pid/(1+Plant*C_pid), dB=dB_flag,
-         label=r'$\frac{P(s)C(s)}{1+P(s)C(s)}$ - Closed-loop')
-
+    bode([Plant * C_pid, 
+          Plant*C_pid/(1+Plant*C_pid)], 
+          dB=dB_flag)
+    
     # now we can add lines to show where we calculated the GM and PM
-    gm_line = fig1.axes[0].plot([Wcg, Wcg],
-                                plt.ylim(), 'k--', label='GM')
-    gm_line[0].set_label('GM')
-    fig1.axes[0].legend()
+    fig1.axes[0].plot([Wcg, Wcg],
+                      plt.ylim(), 'k--', label='GM')
     fig1.axes[1].plot([Wcp, Wcp], plt.ylim(), 'b--', label='PM')
-    plt.legend()
+
+    # finally, we can format and add legends for clarity
+    mag_legend = ['C(s)P(s) - Open-loop', 
+                  r'$\frac{P(s)C(s)}{1+P(s)C(s)}$ - Closed-loop', 
+                  'GM']
+    phase_legend = ['Open-loop', 'Closed-loop', 'PM']
+    fig1.axes[0].legend(mag_legend)
+    fig1.axes[1].legend(phase_legend)
 
     # setting axis title
     fig1.axes[0].set_title('Single Link Robot Arm - '+
                            'GM:'+str(round(gm, 2))+
                            ', PM:'+str(round(pm, 2)))
-
+    fig1.suptitle('Bode Plots for Single Link Robot Arm')
     plt.show()

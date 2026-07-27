@@ -1,5 +1,3 @@
-import matplotlib
-matplotlib.use('tkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pendulumParam as P
@@ -33,8 +31,7 @@ while t < P.t_end:  # main simulation loop
 
     while t < t_next_plot:
         r = reference.square(t)
-        d = disturbance.sin(t)  # input disturbance
-        #n = np.array([[0.], [0.]])
+        d = disturbance.step(t)  # input disturbance
         n = np.array([[noise_z.random(t)], [noise_th.random(t)]])
         u, xhat, dhat = controller.update(r, y + n)
         y = pendulum.update(u + d)  # propagate system

@@ -40,14 +40,14 @@ class VTOLDynamics:
 
     def f(self, state, u):
         #  Return xdot = f(x,u)
-        z = state[0][0]
-        h = state[1][0]
-        theta = state[2][0]
-        zdot = state[3][0]
-        hdot = state[4][0]
-        thetadot = state[5][0]
-        fr = u[0][0]
-        fl = u[1][0]
+        z = state[0, 0]
+        h = state[1, 0]
+        theta = state[2, 0]
+        zdot = state[3, 0]
+        hdot = state[4, 0]
+        thetadot = state[5, 0]
+        fr = u[0, 0]
+        fl = u[1, 0]
         # The equations of motion.
         zddot = (-(fr + fl) * np.sin(theta) + -self.mu * zdot + self.F_wind) / (self.mc + 2.0 * self.mr)
         hddot = (-(self.mc + 2.0 * self.mr) * P.g + (fr + fl) * np.cos(theta)) / (self.mc + 2.0 * self.mr)

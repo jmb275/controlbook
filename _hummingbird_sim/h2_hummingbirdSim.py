@@ -20,17 +20,21 @@ while t < P.t_end:  # main simulation loop
     phi = phi_ref.sin(t)
     theta = 0#theta_ref.sin(t)
     psi = 0#psi_ref.sin(t)
-    # update animation
+
+    # define dummy state and reference values (since we aren't simulating yet)
     state = np.array([[phi], [theta], [psi], [0.0], [0.0], [0.0]])
     ref = np.array([[0], [0], [0]])
+    
+    # convert force and torque to pwm values
     force = 0
     torque = 0
-    # convert force and torque to pwm values
     pwm = P.mixing @ np.array([[force], [torque]]) / P.km
-    animation.update(t, state)
-    dataPlot.update(t, state, pwm)
 
-    t += P.t_plot  # advance time by t_plot
+    # update animation and data plots
+    animation.update(t, state)
+    dataPlot.update(t, state, pwm, ref)
+
+    t = t + P.t_plot  # advance time by t_plot
     plt.pause(0.05)
 
 # Keeps the program from closing until the user presses a button.

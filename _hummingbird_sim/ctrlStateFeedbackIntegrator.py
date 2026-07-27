@@ -61,11 +61,11 @@ class ctrlStateFeedbackIntegrator:
         self.error_psi_d1 = 0.0 
 
     def update(self, r: np.ndarray, y: np.ndarray):
-        theta_ref = r[0][0]
-        psi_ref = r[1][0]
-        phi = y[0][0]
-        theta = y[1][0]
-        psi = y[2][0]
+        theta_ref = r[0, 0]
+        psi_ref = r[1, 0]
+        phi = y[0, 0]
+        theta = y[1, 0]
+        psi = y[2, 0]
         force_equilibrium =     
         # update differentiators
         self.phi_dot = 
@@ -103,8 +103,8 @@ def saturate(u, low_limit, up_limit):
             u = low_limit
     else:
         for i in range(0, u.shape[0]):
-            if u[i][0] > up_limit:
-                u[i][0] = up_limit
-            if u[i][0] < low_limit:
-                u[i][0] = low_limit
+            if u[i, 0] > up_limit:
+                u[i, 0] = up_limit
+            if u[i, 0] < low_limit:
+                u[i, 0] = low_limit
     return u

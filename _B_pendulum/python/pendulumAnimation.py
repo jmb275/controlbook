@@ -1,10 +1,12 @@
 from matplotlib import pyplot as plt
 from matplotlib import patches as mpatches
 from matplotlib.widgets import Button
-import numpy as np 
+import numpy as np
 import pendulumParam as P
-# if you are having difficulty with the graphics, 
-# try using one of the following backends  
+import signal
+
+# if you are having difficulty with the graphics,
+# try using one of the following backends
 # See https://matplotlib.org/stable/users/explain/backends.html
 import matplotlib
 # matplotlib.use('qtagg')  # requires pyqt or pyside
@@ -16,8 +18,6 @@ import matplotlib
 matplotlib.use('tkagg')  # requires TkInter
 # matplotlib.use('wxagg')  # requires wxPython
 
-def exit_program(event):
-    exit()
 
 class pendulumAnimation:
     def __init__(self):
@@ -38,11 +38,14 @@ class pendulumAnimation:
         self.exit_button = Button(self.button_ax, label='Exit', color='r',)
         self.exit_button.label.set_fontweight('bold')
         self.exit_button.label.set_fontsize(18)
-        self.exit_button.on_clicked(exit_program)
+        self.exit_button.on_clicked(lambda event: exit())
+
+        # Register <ctrl+c> signal handler to stop the simulation
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     def update(self, state):
-        z = state[0][0]  # Horizontal position of cart, m
-        theta = state[1][0]  # Angle of pendulum, rads
+        z = state[0, 0]  # Horizontal position of cart, m
+        theta = state[1, 0]  # Angle of pendulum, rads
         # draw plot elements: cart, bob, rod
         self.draw_cart(z)
         self.draw_bob(z, theta)

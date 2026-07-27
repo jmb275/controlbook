@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from control import bode, tf
+from control import bode_plot, tf, frequency_response
 
 
 def add_spec_noise(gamma_n, omega_n, dB_flag = False):
@@ -26,7 +26,7 @@ def add_spec_input_disturbance(gamma_d, omega_d, system, dB_flag=False):
         object that represents the plant before any control is added. 
     '''    
     fig = plt.gcf()
-    mag, phase, omega = bode(system, dB=dB_flag, omega=omega_d, Plot=False)
+    mag, phase, omega = frequency_response(system, omega=omega_d)
     if dB_flag == False:
         fig.axes[0].scatter(omega_d, 1. / gamma_d * mag, facecolors='none', 
                             edgecolors='green', label='$d_{in}$ spec')

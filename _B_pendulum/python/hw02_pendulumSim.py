@@ -24,9 +24,9 @@ while t < P.t_end:  # main simulation loop
     state = np.array([[z], [theta], [0.0], [0.0]])
     animation.update(state)
     dataPlot.update(t, state, f)
-    # advance time by t_plot    
-    t += P.t_plot  
-    plt.pause(0.05)  # allow time for animation to draw
+    # advance time by t_plot
+    t += P.t_plot
+    plt.pause(0.02)  # allow time for animation to draw
 
 # Keeps the program from closing until the user presses a button.
 print('Press key to close')

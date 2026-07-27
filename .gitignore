@@ -47,6 +47,8 @@ __MACOSX/
 # Python files & directories
 *.pyc
 *.ipynb_checkpoints/
+*.pkl
+__pycache__/
 
 # compiled and helper directories
 build/

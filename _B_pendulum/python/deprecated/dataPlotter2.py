@@ -43,8 +43,8 @@ class dataPlotter:
         # update the time history of all plot variables
         #self.time_history[idx] = t  # time
         self.zref_history[idx] = reference  # reference base position
-        self.z_history[idx] = states[0][0]  # base position
-        self.theta_history[idx] = 180.0/np.pi*states[1][0]  # rod angle (converted to degrees)
+        self.z_history[idx] = states[0, 0]  # base position
+        self.theta_history[idx] = 180.0/np.pi*states[1, 0]  # rod angle (converted to degrees)
         self.Force_history[idx] = ctrl  # force on the base
 
         # update the plots with associated histories

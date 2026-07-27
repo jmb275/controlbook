@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.widgets import Button
-import numpy as np 
+import numpy as np
 import satelliteParam as P
-# if you are having difficulty with the graphics, 
-# try using one of the following backends.  
+import signal
+
+# if you are having difficulty with the graphics,
+# try using one of the following backends.
 # See https://matplotlib.org/stable/users/explain/backends.html
 import matplotlib
 # matplotlib.use('qtagg')  # requires pyqt or pyside
@@ -16,38 +18,43 @@ import matplotlib
 matplotlib.use('tkagg')  # requires TkInter
 # matplotlib.use('wxagg')  # requires wxPython
 
-def exit_program(event):
-    exit()
 
 class satelliteAnimation:
     def __init__(self):
         # Used to indicate initialization
-        self.flagInit = True        
+        self.flagInit = True
         # Initializes a figure and axes object
         self.fig, self.ax = plt.subplots()
         # Initializes a list object that will be used to contain
         # handles to the patches and line objects.
         self.handle = []
-        plt.axis([-2.0*P.length, 2.0*P.length, -2.0*P.length, 2.0*P.length])
+        plt.axis([-2.0*P.length, 
+                  2.0*P.length, 
+                  -2.0*P.length, 
+                  2.0*P.length])
         plt.plot([-2.0*P.length, 2.0*P.length], [0, 0], 'b--')
         self.length = P.length
         self.width = P.width
 
         # Create exit button
-        self.button_ax = plt.axes([0.8, 0.805, 0.1, 0.075])  # [left, bottom, width, height]
+        # [left, bottom, width, height]
+        self.button_ax = plt.axes([0.8, 0.805, 0.1, 0.075]) 
         self.exit_button = Button(self.button_ax, label='Exit', color='r',)
         self.exit_button.label.set_fontweight('bold')
         self.exit_button.label.set_fontsize(18)
-        self.exit_button.on_clicked(exit_program)
+        self.exit_button.on_clicked(lambda event: exit())
+
+        # Register <ctrl+c> signal handler to stop the simulation
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     def update(self, u):
         # Process inputs to function
-        theta = u[0][0]   # Angle of base, rad
-        phi = u[1][0]     # angle of panel, rad
+        theta = u[0, 0]   # Angle of base, rad
+        phi = u[1, 0]     # angle of panel, rad
         self.drawBase(theta)
         self.drawPanel(phi)
         # This will cause the image to not distort
-        # self.ax.axis('equal') 
+        # self.ax.axis('equal')
         # After each function has been called, initialization is
         # over.
         if self.flagInit == True:
@@ -83,10 +90,10 @@ class satelliteAnimation:
                                                 facecolor='blue',
                                                 edgecolor='black'))
             # Add the patch to the axes
-            self.ax.add_patch(self.handle[0]) 
+            self.ax.add_patch(self.handle[0])
         else:
             # Update polygon
-            self.handle[0].set_xy(xy)         
+            self.handle[0].set_xy(xy)
 
     def drawPanel(self, phi):
             # points that define the base
@@ -110,7 +117,7 @@ class satelliteAnimation:
                                    facecolor='green',
                                    edgecolor='black'))
                 # Add the patch to the axes
-                self.ax.add_patch(self.handle[1])  
+                self.ax.add_patch(self.handle[1])
             else:
                 # Update polygon
-                self.handle[1].set_xy(xy)  
+                self.handle[1].set_xy(xy)

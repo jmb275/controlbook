@@ -4,11 +4,10 @@ import numpy as np
 
 plt.ion()  # enable interactive drawing
 
-
 class dataPlotterObserver:
     def __init__(self):
         # Number of subplots = num_of_rows*num_of_cols
-        self.num_rows = 2    # Number of subplot rows
+        self.num_rows = 3    # Number of subplot rows
         self.num_cols = 1    # Number of subplot columns
 
         # Crete figure and axes handles
@@ -21,6 +20,8 @@ class dataPlotterObserver:
         self.z_hat_history = []  # estimate of z
         self.z_dot_history = []
         self.z_hat_dot_history = []
+        self.d_history = []  # history of disturbance
+        self.d_hat_history = []  # history of disturbance estimate
 
         # create a handle for every subplot.
         self.handle = []
@@ -28,8 +29,11 @@ class dataPlotterObserver:
             myPlot(self.ax[0], ylabel='z (m)', title='Mass Data'))
         self.handle.append(
             myPlot(self.ax[1], xlabel='t(s)', ylabel='z_dot (ms)'))
+        self.handle.append(
+            myPlot(self.ax[2], xlabel='t(s)', ylabel='d'))
 
-    def update(self, t: float, x: np.ndarray, x_hat: np.ndarray):
+    def update(self, t: float, x: np.ndarray, x_hat: np.ndarray, 
+               d: float = 0, d_hat: float = 0):
         '''
             Add to the time and data histories, and update the plots.
         '''
@@ -39,12 +43,16 @@ class dataPlotterObserver:
         self.z_dot_history.append(x[1, 0])
         self.z_hat_history.append(x_hat[0, 0])
         self.z_hat_dot_history.append(x_hat[1, 0])
+        self.d_history.append(d)
+        self.d_hat_history.append(d_hat)
 
         # update the plots with associated histories
         self.handle[0].update(self.time_history, [
                               self.z_history, self.z_hat_history])
         self.handle[1].update(self.time_history, [
                               self.z_dot_history, self.z_hat_dot_history])
+        self.handle[2].update(self.time_history, [
+                              self.d_history, self.d_hat_history])
         plt.legend(['actual', 'estimated'])
 
 

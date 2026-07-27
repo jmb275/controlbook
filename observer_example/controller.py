@@ -28,7 +28,7 @@ class Controller:
             else:
                 self.K = cnt.place(P.A, P.B, des_ctrl_poles)
                 tmp = P.C @ np.linalg.inv(P.A - P.B @ self.K) @ P.B 
-                self.kr = -1.0 / tmp[0][0]
+                self.kr = -1.0 / tmp[0, 0]
             # is the system observable?
             if np.linalg.matrix_rank(cnt.obsv(P.A, P.C)) != 2: 
                 print("System Not Observable") 
@@ -52,8 +52,8 @@ class Controller:
             else:
                 des_char_poly = np.convolve(des_ctrl_charpoly, np.poly([integrator_pole]))
                 K1 = cnt.place(A1, B1, np.roots(des_char_poly))
-                self.K  = K1[0][0:2]
-                self.ki = K1[0][2]
+                self.K  = K1[:, 0:2]
+                self.ki = K1[0, 2]
                 # is the system observable?
             if np.linalg.matrix_rank(cnt.obsv(P.A, P.C)) != 2: 
                 print("System Not Observable") 
@@ -73,7 +73,7 @@ class Controller:
             else:
                 self.K = cnt.place(P.A, P.B, des_ctrl_poles)
                 tmp = P.C @ np.linalg.inv(P.A - P.B @ self.K) @ P.B 
-                self.kr = -1.0 / tmp[0][0]
+                self.kr = -1.0 / tmp[0, 0]
             #augment system to disturbance observer
             A2 = np.concatenate((np.concatenate((P.A, P.B), axis=1), 
                                 np.zeros((1, 3))), axis=0)
@@ -86,7 +86,7 @@ class Controller:
                 des_char_poly = np.convolve(des_obsv_charpoly, np.poly([dis_obsv_pole]))
                 L2  = cnt.place(A2.T, C2.T, np.roots(des_char_poly)).T 
                 L = L2[0:2]
-                Ld = L2[2][0]
+                Ld = L2[2, 0]
             print('K: ', self.K)
             print('kr: ', self.kr)
             print('L^T: ', L.T)
@@ -107,8 +107,8 @@ class Controller:
             else:
                 des_char_poly = np.convolve(des_ctrl_charpoly, np.poly([integrator_pole]))
                 K1 = cnt.place(A1, B1, np.roots(des_char_poly))
-                self.K  = K1[0][0:2]
-                self.ki = K1[0][2]
+                self.K  = K1[:, 0:2]
+                self.ki = K1[0, 2]
             # augment system to disturbance observer
             A2 = np.concatenate((np.concatenate((P.A, P.B), axis=1),
                                 np.zeros((1, 3))), axis=0)
@@ -120,7 +120,7 @@ class Controller:
                 des_char_poly = np.convolve(des_obsv_charpoly, np.poly([dis_obsv_pole]))
                 L2  = cnt.place(A2.T, C2.T, np.roots(des_char_poly)).T 
                 L = L2[0:2]
-                Ld = L2[2][0]
+                Ld = L2[2, 0]
             print('K: ', self.K)
             print('ki: ', self.ki)
             print('L^T: ', L.T)
@@ -166,7 +166,7 @@ class Controller:
         self.observer_state = self.observer_state + self.Ts / 6 * (F1 + 2*F2 + 2*F3 + F4)
         x_hat = self.observer_state[0:2]
         if ((self.control_mode==3) or  (self.control_mode==4)):
-            d_hat = self.observer_state[2][0]
+            d_hat = self.observer_state[2, 0]
         else:
             d_hat = 0.0
         return x_hat, d_hat

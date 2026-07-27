@@ -14,7 +14,7 @@ class ctrlLoopshape:
         self.method = method
 
     def update(self, theta_r, y):
-        theta = y[0][0]
+        theta = y[0, 0]
 
         # prefilter the reference
         theta_r_filtered = self.prefilter.update(theta_r)
@@ -59,20 +59,20 @@ class transferFunction:
         self.B = np.zeros((n-1, 1))
         self.C = np.zeros((1, n-1))
         for i in range(0, n-1):
-            self.A[0][i] = - den.item(i + 1)
+            self.A[0, i] = - den.item(i + 1)
         for i in range(1, n-1):
-            self.A[i][i - 1] = 1.0
+            self.A[i, i - 1] = 1.0
         if n>1:
-            self.B[0][0] = 1.0
+            self.B[0, 0] = 1.0
         if m == n:
             self.D = num.item(0)
             for i in range(0, n-1):
-                self.C[0][i] = num.item(i+1) \
+                self.C[0, i] = num.item(i+1) \
                                - num.item(0)*den.item(i+1)
         else:
             self.D = 0.0
             for i in range(n-m-1, n-1):
-                self.C[0][i] = num.item(i)
+                self.C[0, i] = num.item(i)
 
     def update(self, u):
         x = self.rk4(u)

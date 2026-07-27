@@ -7,7 +7,8 @@ class ctrlPD:
         #       PD Control: Time Design Strategy
         ####################################################
         # tuning parameters
-        tr_th = 1 # rise time for inner loop
+        # tr_th = 1 # rise time for part a) 
+        tr_th = 1.75 # ries time tuned to not saturate the input
         zeta_th = 0.9  # inner loop damping ratio 
         zeta_phi = 0.9  # outer loop damping ratio
 
@@ -19,7 +20,8 @@ class ctrlPD:
         #                    Inner Loop
         #---------------------------------------------------
         # PD design for inner loop
-        wn_th = 2.2 / tr_th
+        # natural frequency if zeta not 0.707, but < 1.0
+        wn_th = 0.5*np.pi/(tr_th*np.sqrt(1-zeta_th**2)) 
         self.kp_th = wn_th**2 * (P.Js + P.Jp)
         self.kd_th = 2 * zeta_th * wn_th * (P.Js + P.Jp)
 
@@ -32,7 +34,7 @@ class ctrlPD:
         # PD design for outer loop
         M = 10.0  # Time scale separation between loops
         tr_phi = M * tr_th  # rise time for outer loop
-        wn_phi =2.2 / tr_phi
+        wn_phi = 0.5*np.pi/(tr_phi*np.sqrt(1-zeta_phi**2)) 
 
         # this is just a matrix inversion to solve for kp and kd
         AA = np.array([
@@ -44,8 +46,8 @@ class ctrlPD:
                     [-P.k + P.Jp * wn_phi**2],
                     [-P.b + 2 * P.Jp * zeta_phi * wn_phi]])
         tmp = np.linalg.inv(AA) @ bb
-        self.kp_phi = tmp[0][0]
-        self.kd_phi = tmp[1][0]
+        self.kp_phi = tmp[0, 0]
+        self.kd_phi = tmp[1, 0]
 
         # DC gain for outer loop
         k_DC_phi = P.k * DC_th * self.kp_phi \
@@ -59,10 +61,10 @@ class ctrlPD:
         print('kd_phi: ', self.kd_phi)
 
     def update(self, phi_r, state):
-        theta = state[0][0]
-        phi = state[1][0]
-        thetadot = state[2][0]
-        phidot = state[3][0]
+        theta = state[0, 0]
+        phi = state[1, 0]
+        thetadot = state[2, 0]
+        phidot = state[3, 0]
 
         #---------------------------------------------------
         # outer loop: outputs the reference angle for theta

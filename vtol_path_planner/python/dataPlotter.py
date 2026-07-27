@@ -31,11 +31,11 @@ class dataPlotter:
         self.handle.append(myPlot(self.ax[4], xlabel='t(s)', ylabel='torque(Nm)'))
 
     def update(self, t, states, path, motor_thrusts):
-        force = motor_thrusts[0][0]+motor_thrusts[1][0]
-        torque = P.d * (motor_thrusts[0][0] - motor_thrusts[1][0])
-        z_ref = path[0][0]
-        h_ref = path[1][0]
-        theta_ref = path[2][0]
+        force = motor_thrusts[0, 0]+motor_thrusts[1, 0]
+        torque = P.d * (motor_thrusts[0, 0] - motor_thrusts[1, 0])
+        z_ref = path[0, 0]
+        h_ref = path[1, 0]
+        theta_ref = path[2, 0]
         # update the time history of all plot variables
         self.time_history.append(t)  # time
         self.zref_history.append(z_ref)  # reference position

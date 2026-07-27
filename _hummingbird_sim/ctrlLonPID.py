@@ -30,8 +30,8 @@ class ctrlLonPID:
         self.error_theta_d1 = 0.  # pitch error delayed by 1
 
     def update(self, r: np.ndarray, y: np.ndarray):
-        theta_ref = r[0][0]
-        theta = y[1][0]
+        theta_ref = r[0, 0]
+        theta = y[1, 0]
         force_fl = 
         # compute errors
         error_theta = 
@@ -64,10 +64,10 @@ def saturate(u, low_limit, up_limit):
             u = low_limit
     else:
         for i in range(0, u.shape[0]):
-            if u[i][0] > up_limit:
-                u[i][0] = up_limit
-            if u[i][0] < low_limit:
-                u[i][0] = low_limit
+            if u[i, 0] > up_limit:
+                u[i, 0] = up_limit
+            if u[i, 0] < low_limit:
+                u[i, 0] = low_limit
     return u
 
 

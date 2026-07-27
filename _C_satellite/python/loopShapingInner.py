@@ -1,4 +1,4 @@
-from control import tf, margin, bode, tf2ss, step_response, mag2db
+from control import tf, margin, frequency_response, tf2ss, step_response, mag2db
 import numpy as np
 import matplotlib.pyplot as plt
 import satelliteParam as P
@@ -33,9 +33,9 @@ if __name__ == '__main__':
     
     # calculate bode plot and gain and phase margin
     # for original PID * plant dynamics
-    mag, phase, omega = bode(Plant, dB=dB_flag,
-                            omega=np.logspace(-4, 5),
-                            plot=True, label="$P_{\theta,in}(s)$")
+    mag, phase, omega = frequency_response(Plant, 
+                            omega=np.logspace(-4, 5))
+                            #label="$P_{\theta,in}(s)$")
 
     gm, pm, Wcg, Wcp = margin(Plant)
     print("for original system:")
@@ -48,10 +48,10 @@ if __name__ == '__main__':
     lt.add_spec_noise(gamma_n=0.01, omega_n=20, dB_flag=dB_flag)
 
     ## plot the effect of adding the new compensator terms
-    mag, phase, omega = bode(Plant * C, dB=dB_flag,
-                             omega=np.logspace(-4, 5),
-                             plot=True, label="$C_{\theta,in}(s) P_{\theta,in}(s)$",
-                             margins=True)
+    mag, phase, omega = frequency_response(Plant * C,
+                             omega=np.logspace(-4, 5))
+                             #label="$C_{\theta,in}(s) P_{\theta,in}(s)$",
+                             #margins=True)
 
     gm, pm, Wcg, Wcp = margin(Plant * C)
     print("for final C*P:")

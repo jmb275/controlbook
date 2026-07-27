@@ -17,11 +17,13 @@ t = P.t_start  # time starts at t_start
 while t < P.t_end:  # main simulation loop
     # Propagate dynamics in between plot samples
     t_next_plot = t + P.t_plot
+
     # updates control and dynamics at faster simulation rate
     while t < t_next_plot:  
         u = torque.sin(t)
         y = satellite.update(u)  # Propagate the dynamics
         t += P.Ts  # advance time by Ts
+        
     # update animation and data plots
     animation.update(satellite.state)
     dataPlot.update(t, satellite.state, u)

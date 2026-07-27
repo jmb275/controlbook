@@ -4,16 +4,16 @@ import numpy as np
 
 plt.ion()  # enable interactive drawing
 
-
 class dataPlotterObserver:
     def __init__(self):
         # Number of subplots = num_of_rows*num_of_cols
         self.num_rows = 3    # Number of subplot rows
-        self.num_cols = 2    # Number of subplot columns
+        self.num_cols = 3    # Number of subplot columns
 
         # Crete figure and axes handles
         self.fig, self.ax = plt.subplots(
             self.num_rows, self.num_cols, sharex=True)
+        plt.subplots_adjust(left=0.125, wspace=0.6)
 
         # Instantiate lists to hold the time and data histories
         self.time_history = []  # time
@@ -29,19 +29,34 @@ class dataPlotterObserver:
         self.h_hat_dot_history = []
         self.theta_dot_history = []
         self.theta_hat_dot_history = []
+        self.d_lat_history = []  # lateral disturbance
+        self.d_hat_lat_history = []  # estimate of lateral disturbance
+        self.d_lon_history = []  # longitudinal disturbance
+        self.d_hat_lon_history = []  # estimate of longitudinal disturbance
 
         # create a handle for every subplot.
         self.handle = []
         self.handle.append(
             myPlot(self.ax[0][0], ylabel='z (m)', title='VTOL States'))
-        self.handle.append(myPlot(self.ax[1][0], ylabel='h (m)'))
-        self.handle.append(myPlot(self.ax[2][0], ylabel='theta (deg)'))
-        self.handle.append(myPlot(self.ax[0][1], ylabel='z_dot (m/s)'))
-        self.handle.append(myPlot(self.ax[1][1], ylabel='h_dot (m/s)'))
         self.handle.append(
-            myPlot(self.ax[2][1], xlabel='t(s)', ylabel='theta_dot (deg/s)'))
+            myPlot(self.ax[1][0], ylabel='h (m)'))
+        self.handle.append(
+            myPlot(self.ax[2][0], ylabel=r'$\theta$ (deg)'))
+        self.handle.append(
+            myPlot(self.ax[0][1], ylabel=r'$\dot{z}$ (m/s)')) 
+        self.handle.append(
+            myPlot(self.ax[1][1], ylabel=r'$\dot{h}$ (m/s)'))
+        self.handle.append(
+            myPlot(self.ax[2][1], xlabel='t(s)', ylabel=r'$\dot{\theta}$ (deg/s)'))
+        self.handle.append(
+            myPlot(self.ax[0][2], ylabel=r'$d_{lat}$ (N-m)'))
+        self.handle.append(
+            myPlot(self.ax[1][2], ylabel=r'$d_{lon}$ (N)'))
 
-    def update(self, t: float, x: np.ndarray, xhat_lat: np.ndarray, xhat_lon: np.ndarray):
+    def update(self, t: float, x: np.ndarray, xhat_lat: np.ndarray, 
+               xhat_lon: np.ndarray, d_lat: float = 0., 
+               d_hat_lat: float = 0., d_lon: float = 0., 
+               d_hat_lon: float = 0.):
         '''
             Add to the time and data histories, and update the plots.
         '''
@@ -59,6 +74,11 @@ class dataPlotterObserver:
         self.z_hat_dot_history.append(xhat_lat[2, 0])
         self.h_hat_dot_history.append(xhat_lon[1, 0])
         self.theta_hat_dot_history.append(xhat_lat[3, 0])
+        self.d_lat_history.append(d_lat)
+        self.d_hat_lat_history.append(d_hat_lat)
+        self.d_lon_history.append(d_lon)
+        self.d_hat_lon_history.append(d_hat_lon)
+
 
         # update the plots with associated histories
         self.handle[0].update(self.time_history, [
@@ -73,6 +93,10 @@ class dataPlotterObserver:
                               self.h_dot_history, self.h_hat_dot_history])
         self.handle[5].update(self.time_history, [
                               self.theta_dot_history, self.theta_hat_dot_history])
+        self.handle[6].update(self.time_history, [
+                                self.d_lat_history, self.d_hat_lat_history])
+        self.handle[7].update(self.time_history, [
+                                self.d_lon_history, self.d_hat_lon_history])
 
 
 class myPlot:

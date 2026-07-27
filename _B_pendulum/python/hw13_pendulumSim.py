@@ -31,7 +31,8 @@ while t < P.t_end:  # main simulation loop
 
     while t < t_next_plot:
         r = reference.square(t)
-        d = disturbance.step(t)
+        d = disturbance.step(t)  # this is 0 for part a), 
+                                 # then use this for part e)
         u, xhat = controller.update(r, y)
         y = pendulum.update(u + d)  # propagate system
         t += P.Ts  # advance time by Ts

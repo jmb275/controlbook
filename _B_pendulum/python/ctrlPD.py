@@ -7,11 +7,12 @@ class ctrlPD:
         #       PD Control: Time Design Strategy
         ####################################################
         # tuning parameters
+        # tr_th = 0.5         # Ries time for part a) - inner loop
         tr_th = 0.15          # Rise time for inner loop (theta)
         zeta_th = 0.707       # inner loop Damping Coefficient
 
         # saturation limits
-        F_max = 5             		  # Max Force, N
+        self.F_max = 5             		  # Max Force, N
         error_max = 1        		  # Max step size,m
         theta_max = 30.0 * np.pi / 180.0  # Max theta, rads
 
@@ -59,10 +60,10 @@ class ctrlPD:
         self.filter = zeroCancelingFilter(DC_gain)
 
     def update(self, z_r, state):
-        z = state[0][0]
-        theta = state[1][0]
-        zdot = state[2][0]
-        thetadot = state[3][0]
+        z = state[0, 0]
+        theta = state[1, 0]
+        zdot = state[2, 0]
+        thetadot = state[3, 0]
 
         # the reference angle for theta comes from the
         # outer loop PD control
@@ -75,8 +76,15 @@ class ctrlPD:
         # the force applied to the cart comes from the
         # inner loop PD control
         F = self.kp_th * (theta_r - theta) - self.kd_th * thetadot
+        F_sat = saturate(F, self.F_max)
 
-        return F
+        return F_sat
+    
+def saturate(u, limit):
+    if abs(u) > limit:
+        u = limit * np.sign(u)
+    return u
+
 
 class zeroCancelingFilter:
     def __init__(self, DC_gain):

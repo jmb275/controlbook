@@ -20,13 +20,15 @@ while t < P.t_end:  # main simulation loop
     theta = theta_fakeValueGenerator.sin(t)
     phi = phi_fakeValueGenerator.sin(t)
     tau = tau_fakeValueGenerator.sawtooth(t)
+
     # update animation
     state = np.array([[theta], [phi], [0.0], [0.0]])
     animation.update(state)
     dataPlot.update(t, state, tau)
+    
     # advance time by t_plot
     t += P.t_plot
-    plt.pause(0.001)
+    plt.pause(0.02)
 
 # Keeps the program from closing until the user presses a button.
 print('Press key to close')
