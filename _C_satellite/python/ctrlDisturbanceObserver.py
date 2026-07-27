@@ -10,16 +10,15 @@ class ctrlDisturbanceObserver:
         # State Feedback Control Design
         #--------------------------------------------------
         # tuning parameters
-        wn_th = 1.0 
-        wn_phi = 0.1    
-        zeta_phi = 0.95  # damping ratio for phi
-        zeta_th = 0.95  # damping ratio for theta
+        tr_th = 2.0
+        M = 3.0  # Time scale separation between loops
+        tr_phi = M * tr_th  # rise time for outer loop
+        zeta_th = 0.9  # damping ratio for theta
+        zeta_phi = 0.9  # damping ratio for phi
         integrator_pole = -2.0
-
-        # pick observer poles
-        wn_th_obs = 10.0 * wn_th
-        wn_phi_obs = 10.0 * wn_phi
-        dist_obsv_pole = -1.0  # disturbance observer pole
+        tr_th_obs = tr_th/10.0
+        tr_phi_obs = tr_phi/10.0
+        dist_obsv_pole = -10.0  # disturbance observer pole
 
         # State Space Equations
         # xdot = A*x + B*u
@@ -34,6 +33,7 @@ class ctrlDisturbanceObserver:
                       [0.0]])
         C = np.array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0]])
+        
         # form augmented system
         Cout = np.array([[0.0, 1.0, 0.0, 0.0]])
         A1 = np.array([[0.0, 0.0, 1.0, 0.0, 0.0],
@@ -46,19 +46,24 @@ class ctrlDisturbanceObserver:
                        [1.0 / P.Js],
                        [0.0],
                        [0.0]])
+        
         # gain calculation
+        wn_th = 0.5*np.pi/(tr_th*np.sqrt(1-zeta_th**2)) 
+        wn_phi = 0.5*np.pi/(tr_phi*np.sqrt(1-zeta_phi**2)) 
         des_char_poly = np.convolve(
                             np.convolve([1, 2 * zeta_phi * wn_phi, wn_phi**2],
                                         [1, 2 * zeta_th * wn_th, wn_th**2]),
                             [1, -integrator_pole])
         des_poles = np.roots(des_char_poly)
+        
         # Compute the gains if the system is controllable
         if np.linalg.matrix_rank(cnt.ctrb(A1, B1)) != 5:
             print("The system is not controllable")
         else:
             K1 = cnt.place(A1, B1, des_poles)
-            self.K = K1[0][0:4]
-            self.ki = K1[0][4]
+            self.K = K1[:, 0:4]
+            self.ki = K1[0, 4]
+        
         # compute observer gains
         # Augmented Matrices
         A2 = np.concatenate((
@@ -66,23 +71,33 @@ class ctrlDisturbanceObserver:
                             np.zeros((1, 5))),
                             axis=0)
         C2 = np.concatenate((C, np.zeros((2, 1))), axis=1)
+
+        #compute disturbance obsv. gains
+        # pick observer poles
+        wn_th_obs = 0.5*np.pi/(tr_th_obs*np.sqrt(1-zeta_th**2)) 
+        wn_phi_obs = 0.5*np.pi/(tr_phi_obs*np.sqrt(1-zeta_phi**2)) 
+
         des_obs_char_poly = np.convolve(
                                     np.convolve([1, 2 * zeta_phi * wn_phi_obs, wn_phi_obs**2],
                                                 [1, 2*zeta_th*wn_th_obs, wn_th_obs**2]),
                                     np.poly([dist_obsv_pole]))
         des_obs_poles = np.roots(des_obs_char_poly)
+        
         # Compute the observer gains if the system is observable
         if np.linalg.matrix_rank(cnt.ctrb(A2.T, C2.T)) != 5:
             print("The system is not observable")
         else:
             L2 = signal.place_poles(A2.T, C2.T, des_obs_poles).gain_matrix.T
+        
         # print gains to terminal
         print('K: ', self.K)
         print('ki: ', self.ki)
         print('L^T: ', L2.T)
+        
         # variables to implement integrator
         self.integrator_phi = 0.0  # integrator
         self.error_phi_d1 = 0.0  # error signal delayed by 1 sample
+        
         # estimated state variables
         self.observer_state = np.array([
             [0.0],  # initial estimate for z_hat
@@ -100,14 +115,14 @@ class ctrlDisturbanceObserver:
     def update(self, phi_r, y):
         # update the observer and extract z_hat
         x_hat, d_hat = self.update_observer(y)
-        phi_hat = x_hat[1][0]
+        phi_hat = x_hat[1, 0]
         # integrate error
         error_phi = phi_r - phi_hat
         self.integrator_phi = self.integrator_phi + (P.Ts / 2.0) * (error_phi + self.error_phi_d1)
         self.error_phi_d1 = error_phi
         # Compute the state feedback controller
         tau_unsat = -self.K @ x_hat - self.ki * self.integrator_phi - d_hat
-        tau = saturate(tau_unsat[0], P.tau_max)
+        tau = saturate(tau_unsat[0, 0], P.tau_max)
         self.tau_d1 = tau
         return tau, x_hat, d_hat
 
@@ -119,7 +134,7 @@ class ctrlDisturbanceObserver:
         F4 = self.observer_f(self.observer_state + P.Ts * F3, y_m)
         self.observer_state = self.observer_state + P.Ts / 6 * (F1 + 2*F2 + 2*F3 + F4)
         x_hat = self.observer_state[0:4]
-        d_hat = self.observer_state[4][0]
+        d_hat = self.observer_state[4, 0]
         return x_hat, d_hat
 
     def observer_f(self, x_hat, y_m):

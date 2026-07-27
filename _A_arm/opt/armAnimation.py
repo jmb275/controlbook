@@ -34,7 +34,7 @@ class armAnimation:
 
     def update(self, x):
         # Process inputs to function
-        theta = x[0][0]   # angle of arm, rads
+        theta = x[0, 0]   # angle of arm, rads
         X = [0, self.length*np.cos(theta)]  # X data points
         Y = [0, self.length*np.sin(theta)]  # Y data points
         # When the class is initialized, a line object will be

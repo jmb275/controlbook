@@ -64,9 +64,9 @@ class DrawHummingbird():
         self.motor_width = 0.6 * self.arm_width
         self.motor_height = 0.6 * self.arm_height
         self.motor_length = 2 * self.motor_width
-        phi = state[0][0]
-        theta = state[1][0]
-        psi = state[2][0]
+        phi = state[0, 0]
+        theta = state[1, 0]
+        psi = state[2, 0]
         # base
         self.base_points, self.base_index, self.base_meshColors \
             = self.get_box_points(self.base_width,
@@ -155,9 +155,9 @@ class DrawHummingbird():
         window.addItem(self.rotor2)
 
     def update(self, t, state):
-        phi = state[0][0]
-        theta = state[1][0]
-        psi = state[2][0]
+        phi = state[0, 0]
+        theta = state[1, 0]
+        psi = state[2, 0]
         # counterweight
         cw_position = np.array([[0], [0], [-self.base_length]])
         cw_rotation = Euler2Rotation(0, theta, psi)

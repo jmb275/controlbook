@@ -71,9 +71,9 @@ class HummingbirdDynamics:
 
     def f(self, state: np.ndarray, u: np.ndarray):
         # Return xdot = f(x,u)
-        phidot = state[3][0]
-        thetadot = state[4][0]
-        psidot = state[5][0]
+        phidot = state[3, 0]
+        thetadot = state[4, 0]
+        psidot = state[5, 0]
 
         # TODO fill out the equations for each of the following in their
         # definitions below.
@@ -88,9 +88,9 @@ class HummingbirdDynamics:
         qddot =
 
         # define the second derivatives from qddot
-        phiddot = qddot[0][0]
-        thetaddot = qddot[1][0]
-        psiddot = qddot[2][0]
+        phiddot = qddot[0, 0]
+        thetaddot = qddot[1, 0]
+        psiddot = qddot[2, 0]
 
         # build xdot and return it
         xdot = np.array([[phidot],
@@ -177,6 +177,6 @@ class HummingbirdDynamics:
 
 def saturate(u: np.ndarray, limit: float):
     for i in range(0, u.shape[0]):
-        if abs(u[i][0]) > limit:
-            u[i][0] = limit * np.sign(u[i][0])
+        if abs(u[i,0]) > limit:
+            u[i,0] = limit * np.sign(u[i,0])
     return u

@@ -32,8 +32,8 @@ def quadraticCost(x, Q, R, controller, arm, reference, disturbance):
         d = disturbance.step(t)
         u = controller.update(r, y)
         y = arm.update(u+d)
-        cost += Q[0][0] * (arm.state[0][0]-r)**2 \
-              + Q[1][1] * (arm.state[1][0])**2 \
+        cost += Q[0, 0] * (arm.state[0, 0]-r)**2 \
+              + Q[1, 1] * (arm.state[1, 0])**2 \
               + R * u**2
         t += P.Ts
     print(cost)

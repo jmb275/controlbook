@@ -1,12 +1,16 @@
 # run this file to test your vectors and matrices from the hummingbirdDynamics.py file
 import numpy as np
-# from hummingbirdDynamics import HummingbirdDynamics as dynamics
 from hummingbirdDynamics import HummingbirdDynamics as dynamics
 import hummingbirdParam as P
 import pickle as pkl
+import os
 
-
-data = pkl.load(open("./test_matrices.pkl", "rb"))
+# load the test matrices relative to this file so the test works
+# regardless of the directory it is run from
+current_dir = os.path.dirname(os.path.abspath(__file__))
+pickle_path = os.path.join(current_dir, 'test_matrices.pkl')
+with open(pickle_path, 'rb') as f:
+    data = pkl.load(f)
 precision = 6
 
 # states are defined in the following order: [phi, theta, psi, phi_dot, theta_dot, psi_dot]

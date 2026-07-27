@@ -8,10 +8,10 @@ class ctrlStateFeedback:
         # State Feedback Control Design
         #--------------------------------------------------
         # tuning parameters
-        tr_z = 1.0        # rise time for position
-        tr_theta = 0.5    # rise time for angle
-        zeta_z = 0.707  # damping ratio position
-        zeta_th = 0.707  # damping ratio angle
+        tr_theta = 0.5     # rise time for angle
+        tr_z = tr_theta*5  # rise time for position
+        zeta_z = 0.9  # damping ratio position
+        zeta_th = 0.9  # damping ratio angle
         
         # State Space Equations
         # xdot = A*x + B*u
@@ -34,8 +34,8 @@ class ctrlStateFeedback:
                       [0.0, 1.0, 0.0, 0.0]])
         
         # gain calculation
-        wn_th = 2.2 / tr_theta  # natural frequency for angle
-        wn_z = 2.2 / tr_z  # natural frequency for position
+        wn_th = 0.5*np.pi/(tr_theta*np.sqrt(1-zeta_th**2)) # natural frequency for angle
+        wn_z = 0.5*np.pi/(tr_z*np.sqrt(1-zeta_z**2)) # natural frequency for position
         des_char_poly = np.convolve(
             [1, 2 * zeta_z * wn_z, wn_z**2],
             [1, 2 * zeta_th * wn_th, wn_th**2])
@@ -48,6 +48,7 @@ class ctrlStateFeedback:
             self.K = cnt.place(A, B, des_poles)
             Cr = np.array([[1.0, 0.0, 0.0, 0.0]])
             self.kr = -1.0 / (Cr @ np.linalg.inv(A-B @ self.K) @ B)
+            
         # print gains to terminal
         print('K: ', self.K)
         print('kr: ', self.kr)
@@ -55,7 +56,7 @@ class ctrlStateFeedback:
     def update(self, z_r, x):
         # Compute the state feedback controller
         F_unsat = -self.K @ x + self.kr * z_r
-        F = saturate(F_unsat[0][0], P.F_max)
+        F = saturate(F_unsat[0, 0], P.F_max)
         return F
 
 

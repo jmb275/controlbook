@@ -8,10 +8,11 @@ class ctrlStateFeedback:
         # State Feedback Control Design
         #--------------------------------------------------
         # tuning parameters
-        tr_th = 0.8
-        tr_phi = 8.0
-        zeta_th = 0.707  # damping ratio for theta
-        zeta_phi = 0.707  # damping ratio for phi
+        tr_th = 2.0
+        M = 3.0  # Time scale separation between loops
+        tr_phi = M * tr_th  # rise time for outer loop
+        zeta_th = 0.9  # damping ratio for theta
+        zeta_phi = 0.9  # damping ratio for phi
 
         # State Space Equations
         # xdot = A*x + B*u
@@ -26,9 +27,10 @@ class ctrlStateFeedback:
                       [0.0]])
         C = np.array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0]])
+
         # gain calculation
-        wn_th = 2.2 / tr_th
-        wn_phi = 2.2 / tr_phi
+        wn_th = 0.5*np.pi/(tr_th*np.sqrt(1-zeta_th**2)) 
+        wn_phi = 0.5*np.pi/(tr_phi*np.sqrt(1-zeta_phi**2)) 
         des_char_poly = np.convolve([1, 2 * zeta_th * wn_th, wn_th**2],
                                     [1, 2 * zeta_phi * wn_phi, wn_phi**2])
         des_poles = np.roots(des_char_poly)
@@ -46,7 +48,7 @@ class ctrlStateFeedback:
     def update(self, phi_r, x):
         # Compute the state feedback controller
         tau_unsat = -self.K @ x + self.kr * phi_r
-        tau = saturate(tau_unsat[0][0], P.tau_max)
+        tau = saturate(tau_unsat[0, 0], P.tau_max)
         return tau
 
 

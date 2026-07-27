@@ -17,5 +17,5 @@ def saturate(u, low_limit, up_limit):
         u = np.max((np.min((u, up_limit)), low_limit))
     else:
         for i in range(0, u.shape[0]):
-            u[i][0] = np.max((np.min((u[i][0], up_limit)), low_limit))
+            u[i, 0] = np.max((np.min((u[i, 0], up_limit)), low_limit))
     return u

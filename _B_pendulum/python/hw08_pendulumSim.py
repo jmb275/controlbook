@@ -8,7 +8,7 @@ from pendulumDynamics import pendulumDynamics
 from ctrlPD import ctrlPD
 
 # instantiate pendulum, controller, and reference classes
-pendulum = pendulumDynamics(alpha=0.1)
+pendulum = pendulumDynamics(alpha=0.0)
 controller = ctrlPD()
 reference = signalGenerator(amplitude=0.5, frequency=0.04)
 
@@ -20,9 +20,7 @@ t = P.t_start  # time starts at t_start
 y = pendulum.h()  # output of system at start of simulation
 
 # for part e), we can uncomment below
-#pendulum.state[1,0] = 10.0*np.pi/180.0
-#reference = signalGenerator(amplitude = 0.0, frequency=0.0)
-
+# pendulum.state[1,0] = 10.0*np.pi/180.0
 
 while t < P.t_end:  # main simulation loop
     # Propagate dynamics in between plot samples

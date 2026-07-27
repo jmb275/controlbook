@@ -19,7 +19,7 @@ class ctrlLQR:
         # xdot = A*x + B*u
         # y_r = Cr*x
         self.A = np.array([[0.0, 1.0],
-                          [0.0, -1.0 * P.b / P.m / (P.ell**2)]])
+                          [0.0, -3.0 * P.b / P.m / (P.ell**2)]])
         self.B = np.array([[0.0],
                            [3.0 / P.m / (P.ell**2)]])        
         self.C = np.array([[1.0, 0.0]])
@@ -35,8 +35,8 @@ class ctrlLQR:
             print("The system is not controllable")
         else:
             K1_lqr, _, _ = cnt.lqr(A1, B1, Q, R)
-            self.K = K1_lqr[0][0:2].reshape(1,2)
-            self.ki = K1_lqr[0][2]
+            self.K = K1_lqr[:, 0:2]
+            self.ki = K1_lqr[0, 2]
 
         # observer design
         controller_eig = np.linalg.eig(A1 - B1 @ K1_lqr)
@@ -66,7 +66,7 @@ class ctrlLQR:
     #def update(self, theta_r, state):
         # update the observer and extract theta_hat
         x_hat = self.update_observer(y)
-        theta_hat = x_hat[0][0]
+        theta_hat = x_hat[0, 0]
         # integrate error
         error = theta_r - theta_hat
         self.integrator = self.integrator \
@@ -97,7 +97,7 @@ class ctrlLQR:
 
     def observer_f(self, x_hat, y_m):
         # compute feedback linearizing torque tau_fl
-        theta_hat = x_hat[0][0]
+        theta_hat = x_hat[0, 0]
         tau_fl = P.m * P.g * (P.ell / 2.0) * np.cos(theta_hat)
 
         # xhatdot = A*(xhat-xe) + B*(u-ue) + L(y-C*xhat)

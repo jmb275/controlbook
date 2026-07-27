@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from control import tf, margin, bode, tf2ss, step_response, mag2db
+from control import tf, margin, tf2ss, step_response, frequency_response
 import numpy as np
 import satelliteParam as P
 from ctrlPID import ctrlPID
@@ -43,9 +43,9 @@ M = 60.0
 C_lag = lt.get_control_lag(0.5, 60)
 
 #  -----proportional control: change cross over frequency----
-mag, phase, omega = bode(Plant*C_int*C_lead*C_lag,
+mag, phase, omega = frequency_response(Plant*C_int*C_lead*C_lag,
                          omega=[omega_max],
-                         Plot=False)
+                    )
 C_k = lt.get_control_proportional(1.0/mag[0])
 
 #  -----low pass filter: decrease gain at high frequency (noise)----
@@ -87,9 +87,9 @@ if __name__ == '__main__':
 
     # calculate bode plot and gain and phase margin
     # for original PID * plant dynamics
-    mag, phase, omega = bode(Plant, dB=dB_flag,
-                             omega=np.logspace(-4, 4),
-                             plot=True, label=r'$P_{\theta,in}(s)$')
+    mag, phase, omega = frequency_response(Plant,
+                             omega=np.logspace(-4, 4))
+                             #label=r'$P_{\theta,in}(s)$')
 
     gm, pm, Wcg, Wcp = margin(Plant)
     print("for original system:")
@@ -110,11 +110,10 @@ if __name__ == '__main__':
     lt.add_spec_noise(gamma_n, omega_n, dB_flag)
 
     ## plot the effect of adding the new compensator terms
-    mag, phase, omega = bode(Plant * C, dB=dB_flag,
-                             omega=np.logspace(-4, 4),
-                             plot=True, margins=True,
-                             label=r"$C_{\phi,out}(s)"+
-                                   "P_{\phi,out}(s)$")
+    mag, phase, omega = frequency_response(Plant * C,
+                             omega=np.logspace(-4, 4))
+                            # label=r"$C_{\phi,out}(s)"+
+                            #       "P_{\phi,out}(s)$")
 
     gm, pm, Wcg, Wcp = margin(Plant * C)
     print("for final C*P:")
@@ -142,22 +141,14 @@ if __name__ == '__main__':
     plt.figure()
     plt.grid(True)
     plt.subplot(311)
-    mag, phase, omega = bode(CLOSED_R_to_Y,
-                             dB=dB_flag, plot=False)
-    if dB_flag:
-        plt.semilogx(omega, mag2db(mag), color=[0,0,1],
-            label='closed-loop $\\frac{Y}{R}$ - no pre-filter')
-    else:
-        plt.loglog(omega, mag, color=[0,0,1],
-            label='closed-loop $\\frac{Y}{R}$ - no pre-filter')
-    mag, phase, omega = bode(CLOSED_R_to_Y_with_F,
-                             dB=dB_flag, plot=False)
-    if dB_flag:
-        plt.semilogx(omega, mag2db(mag), color=[0,1,0],
-            label='closed-loop $\\frac{Y}{R}$ - with pre-filter')
-    else:
-        plt.loglog(omega, mag, color=[0,1,0],
-            label='closed-loop $\\frac{Y}{R}$ - with pre-filter')
+    mag, phase, omega = frequency_response(CLOSED_R_to_Y)
+    plt.loglog(omega, mag, color=[0,0,1],
+                label='closed-loop $\\frac{Y}{R}$ - no pre-filter')
+    
+    mag, phase, omega = frequency_response(CLOSED_R_to_Y_with_F,
+                             dB=dB_flag)
+    plt.loglog(omega, mag, color=[0,1,0],
+                label='closed-loop $\\frac{Y}{R}$ - with pre-filter')
     plt.ylabel('Closed-Loop Bode Plot')
     plt.grid(True)
     plt.legend()

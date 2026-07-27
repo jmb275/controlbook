@@ -28,13 +28,17 @@ class satelliteAnimation:
         # Initializes a list object that will be used to contain
         # handles to the patches and line objects.
         self.handle = []
-        plt.axis([-2.0*P.length, 2.0*P.length, -2.0*P.length, 2.0*P.length])
+        plt.axis([-2.0*P.length, 
+                  2.0*P.length, 
+                  -2.0*P.length, 
+                  2.0*P.length])
         plt.plot([-2.0*P.length, 2.0*P.length], [0, 0], 'b--')
         self.length = P.length
         self.width = P.width
 
         # Create exit button
-        self.button_ax = plt.axes([0.8, 0.805, 0.1, 0.075])  # [left, bottom, width, height]
+        # [left, bottom, width, height]
+        self.button_ax = plt.axes([0.8, 0.805, 0.1, 0.075]) 
         self.exit_button = Button(self.button_ax, label='Exit', color='r',)
         self.exit_button.label.set_fontweight('bold')
         self.exit_button.label.set_fontsize(18)
@@ -45,8 +49,8 @@ class satelliteAnimation:
 
     def update(self, u):
         # Process inputs to function
-        theta = u[0][0]   # Angle of base, rad
-        phi = u[1][0]     # angle of panel, rad
+        theta = u[0, 0]   # Angle of base, rad
+        phi = u[1, 0]     # angle of panel, rad
         self.drawBase(theta)
         self.drawPanel(phi)
         # This will cause the image to not distort

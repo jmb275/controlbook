@@ -48,8 +48,8 @@ class ctrlPID:
                     [-P.k + P.Jp * wn_phi**2],
                     [-P.b + 2 * P.Jp * zeta_phi * wn_phi]])
         tmp = np.linalg.inv(AA) @ bb
-        self.kp_phi = tmp[0][0]
-        self.kd_phi = tmp[1][0]
+        self.kp_phi = tmp[0, 0]
+        self.kd_phi = tmp[1, 0]
 
         # DC gain for outer loop
         k_DC_phi = P.k * k_DC_th * self.kp_phi \
@@ -74,8 +74,8 @@ class ctrlPID:
         self.theta_prev = P.theta0
 
     def update(self, phi_r, y):
-        theta = y[0][0]
-        phi = y[1][0]
+        theta = y[0, 0]
+        phi = y[1, 0]
         #---------------------------------------------------
         # Update Outer Loop (phi-control)
         #---------------------------------------------------

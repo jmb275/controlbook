@@ -38,7 +38,7 @@ class ctrlPID:
         self.integrator = 0.0  # integrator
 
     def update(self, theta_r, y):
-        theta = y[0][0]
+        theta = y[0, 0]
 
         # compute feedback linearized torque tau_fl
         tau_fl = P.m * P.g * (P.ell / 2.0) * np.cos(theta)

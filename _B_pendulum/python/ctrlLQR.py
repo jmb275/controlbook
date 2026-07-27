@@ -43,8 +43,8 @@ class ctrlLQR:
             print("The system is not controllable")
         else:
             K1_lqr, _ , _ = cnt.lqr(A1, B1, Q, R)
-            self.K = K1_lqr[0][0:4].reshape(1, 4)
-            self.ki = K1_lqr[0][4]
+            self.K = K1_lqr[:, 0:4]
+            self.ki = K1_lqr[0, 4]
             
         # compute observer gains
         controller_eig = np.linalg.eig(A1 - B1 @ K1_lqr)
@@ -75,7 +75,7 @@ class ctrlLQR:
     def update(self, z_r, y):
         # update the observer and extract z_hat
         x_hat = self.update_observer(y)
-        z_hat = x_hat[0][0]
+        z_hat = x_hat[0, 0]
         # integrate error
         error_z = z_r - z_hat
         self.integrator_z = self.integrator_z \

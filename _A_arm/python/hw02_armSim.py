@@ -22,7 +22,11 @@ while t < P.t_end:  # main simulation loop
 
     # update animation
     theta_dot = 0.0
-    state = np.array([[theta], [theta_dot]])  #state is made of theta, and theta_dot
+
+    # state is made of theta, and theta_dot
+    state = np.array([[theta], [theta_dot]])  
+
+    # update animation and plot 
     animation.update(state)
     dataPlot.update(t, state, tau)
 

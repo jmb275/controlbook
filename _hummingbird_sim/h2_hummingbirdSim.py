@@ -34,7 +34,7 @@ while t < P.t_end:  # main simulation loop
     animation.update(t, state)
     dataPlot.update(t, state, pwm, ref)
 
-    t += P.t_plot  # advance time by t_plot
+    t = t + P.t_plot  # advance time by t_plot
     plt.pause(0.05)
 
 # Keeps the program from closing until the user presses a button.

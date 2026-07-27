@@ -10,8 +10,8 @@ class ctrlPD:
         print('kd: ', self.kd)
 
     def update(self, theta_r, x):
-        theta = x[0][0]
-        thetadot = x[1][0]
+        theta = x[0, 0]
+        thetadot = x[1, 0]
         # feedback linearized torque
         tau_fl = P.m * P.g * (P.ell / 2.0) * np.cos(theta)
         # equilibrium torque around theta_e = 0

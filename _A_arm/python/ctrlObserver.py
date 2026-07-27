@@ -8,10 +8,11 @@ class ctrlObserver:
         #--------------------------------------------------
         # State Feedback Control Design
         #--------------------------------------------------
-        #  tuning parameters
+        #  tuning parameters - these are similar to A.12, but 
+        #  do not match exactly. 
         tr = 0.4
         zeta = 0.707
-        integrator_pole = 9
+        integrator_pole = -9
         tr_obs = tr/10  # rise time frequency for observer
         zeta_obs = 0.707  # damping ratio for observer
 
@@ -19,7 +20,7 @@ class ctrlObserver:
         # xdot = A*x + B*u
         # y = C*x
         self.A = np.array([[0.0, 1.0],
-                          [0.0, -1.0 * P.b / P.m / (P.ell**2)]])
+                          [0.0, -3.0 * P.b / P.m / (P.ell**2)]])
         self.B = np.array([[0.0],
                            [3.0 / P.m / (P.ell**2)]])        
         self.C = np.array([[1.0, 0.0]])
@@ -32,7 +33,7 @@ class ctrlObserver:
         # gain calculation
         wn = 2.2 / tr  # natural frequency
         des_char_poly = np.convolve([1, 2*zeta*wn, wn**2],
-                                    [1, integrator_pole])
+                                    [1, -integrator_pole])
         des_poles = np.roots(des_char_poly)
         
         # Compute the gains if the system is controllable
@@ -40,8 +41,8 @@ class ctrlObserver:
             print("The system is not controllable")
         else:
             K1 = cnt.place(A1, B1, des_poles)
-            self.K = K1[0][0:2]
-            self.ki = K1[0][2]
+            self.K = K1[:, 0:2]
+            self.ki = K1[0, 2]
         
         # observer design
         wn_obs = 2.2 / tr_obs
@@ -68,7 +69,7 @@ class ctrlObserver:
     def update(self, theta_r, y):
         # update the observer and extract theta_hat
         x_hat = self.update_observer(y)
-        theta_hat = x_hat[0][0]
+        theta_hat = x_hat[0, 0]
         # integrate error
         error = theta_r - theta_hat
         self.integrator = self.integrator \
@@ -82,7 +83,7 @@ class ctrlObserver:
         tau_tilde = -self.K @ x_hat - self.ki * self.integrator
 
         # compute total torque
-        tau = saturate(tau_fl + tau_tilde[0], P.tau_max)
+        tau = saturate(tau_fl + tau_tilde[0, 0], P.tau_max)
         self.tau_prev = tau
 
         return tau, x_hat
@@ -99,7 +100,7 @@ class ctrlObserver:
 
     def observer_f(self, x_hat, y_m):
         # compute feedback linearizing torque tau_fl
-        theta_hat = x_hat[0][0]
+        theta_hat = x_hat[0, 0]
         tau_fl = P.m * P.g * (P.ell / 2.0) * np.cos(theta_hat)
 
         # xhatdot = A*(xhat-xe) + B*(u-ue) + L(y-C*xhat)

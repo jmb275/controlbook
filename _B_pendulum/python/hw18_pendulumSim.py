@@ -26,9 +26,10 @@ while t < P.t_end:  # main simulation loop
     # Get referenced inputs from signal generators
     # Propagate dynamics in between plot samples
     t_next_plot = t + P.t_plot
+   
     while t < t_next_plot:
         r = reference.square(t)
-        d = 1.0  #input disturbance
+        d = disturbance.step(t)  #input disturbance
         n = np.array([[noise_z.random(t)], [noise_th.random(t)]])
         u = controller.update(r, y + n) 
         y = pendulum.update(u + d)  

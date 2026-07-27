@@ -2,17 +2,21 @@
 hummingbirdAnimation
         12/2022 - R.W. Beard
 """
+import sys
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 import pyqtgraph.Vector as Vector
+import signal
 from PyQt6.QtWidgets import QPushButton, QWidget, QVBoxLayout # for exit button attached to main window
-import hummingbirdParam as P
+
 
 class HummingbirdAnimation:
     def __init__(self):
         # initialize Qt gui application, widget (to combine button + window) and window
-        self.app = pg.QtWidgets.QApplication([])  # initialize QT
+        self.app = pg.QtWidgets.QApplication.instance()
+        if self.app is None:
+            self.app = pg.QtWidgets.QApplication(sys.argv)
         self.main_widget = QWidget()  # Main container widget
         self.main_widget.setWindowTitle('Hummingbird Viewer')
         self.main_widget.setGeometry(800, 200, 700, 700)
@@ -43,8 +47,11 @@ class HummingbirdAnimation:
         self.main_widget.setLayout(layout)
         self.main_widget.show()
 
+        # Register <ctrl+c> signal handler to stop the simulation
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     def close_window(self):
-        self.window.close() 
+        self.window.close()
         self.app.quit()
         exit(0)
 
@@ -86,9 +93,9 @@ class DrawHummingbird():
         self.motor_width = 0.6 * self.arm_width
         self.motor_height = 0.6 * self.arm_height
         self.motor_length = 2 * self.motor_width
-        phi = state[0][0]
-        theta = state[1][0]
-        psi = state[2][0]
+        phi = state[0, 0]
+        theta = state[1, 0]
+        psi = state[2, 0]
         # base
         self.base_points, self.base_index, self.base_meshColors \
             = self.get_box_points(self.base_width,
@@ -177,9 +184,9 @@ class DrawHummingbird():
         window.addItem(self.rotor2)
 
     def update(self, t, state):
-        phi = state[0][0]
-        theta = state[1][0]
-        psi = state[2][0]
+        phi = state[0, 0]
+        theta = state[1, 0]
+        psi = state[2, 0]
         # counterweight
         cw_position = np.array([[0], [0], [-self.base_length]])
         cw_rotation = Euler2Rotation(0, theta, psi)

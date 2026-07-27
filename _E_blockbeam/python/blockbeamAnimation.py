@@ -47,8 +47,8 @@ class blockbeamAnimation:
 
     def update(self, x: np.ndarray):
         # Process inputs to function
-        z = x[0][0]        # Horizontal position of cart, m
-        theta = x[1][0]   # Angle of block-beam, rads
+        z = x[0, 0]        # Horizontal position of cart, m
+        theta = x[1, 0]   # Angle of block-beam, rads
         self.drawBlock(z, theta)
         self.drawBeam(theta)
         self.ax.axis('equal')  # This will cause the image to not distort

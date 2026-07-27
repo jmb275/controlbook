@@ -22,8 +22,8 @@ class ctrlPD:
         print('kd: ', self.kd)
 
     def update(self, theta_r, state):
-        theta = state[0][0]
-        thetadot = state[1][0]
+        theta = state[0, 0]
+        thetadot = state[1, 0]
 
         # compute feedback linearizing torque tau_fl
         tau_fl = P.m * P.g * (P.ell / 2.0) * np.cos(theta)

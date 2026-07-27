@@ -55,10 +55,10 @@ class pendulumDynamics:
         # return y = h(x) - this is a model of what we can measure, and the output we are
         # trying to control. In this case, we can measure the position of the cart, and the angle
         # of the pendulum. 
-
-        z = self.state[0][0]
-        theta = self.state[1][0]
+        z = self.state[0, 0]
+        theta = self.state[1, 0]
         y = np.array([[z],[theta]])
+        
         return y
 
     def rk4_step(self, u):

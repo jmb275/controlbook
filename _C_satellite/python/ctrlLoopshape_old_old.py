@@ -56,7 +56,7 @@ class ctrlLoopshape:
             self.updatePrefilterState(phi_r)
             phi_r_filtered = self.C_F @ self.x_F + self.D_F * phi_r
             # error signal for outer loop
-            error_out = phi_r_filtered[0][0] - phi
+            error_out = phi_r_filtered[0, 0] - phi
             # Outer loop control C_out
             self.updateControlOutState(error_out)
             theta_r = -self.kd_phi * self.phi_dot + self.Cout_C @ self.xout_C + self.Dout_C * error_out
@@ -65,7 +65,7 @@ class ctrlLoopshape:
             # Inner loop control C_in
             self.updateControlInState(error_in)
             tau_unsat = -self.kd_th * self.theta_dot + self.Cin_C @ self.xin_C + self.Din_C * error_in
-            tau = saturate(tau_unsat[0][0], P.tau_max)
+            tau = saturate(tau_unsat[0, 0], P.tau_max)
             return tau
 
         elif self.method == "digital_filter":

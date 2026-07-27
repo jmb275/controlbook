@@ -6,7 +6,7 @@ class ctrlStateFeedback:
     # dirty derivatives to estimate thetadot
     def __init__(self):
         #  tuning parameters
-        tr = 0.4
+        tr = 0.4890
         zeta = 0.707
 
         # State Space Equations
@@ -14,7 +14,7 @@ class ctrlStateFeedback:
         # y = C*x
 
         A = np.array([[0.0, 1.0],
-                      [0.0, -1.0 * P.b / P.m / (P.ell**2)]])
+                      [0.0, -3.0 * P.b / P.m / (P.ell**2)]])
         B = np.array([[0.0],
                       [3.0 / P.m / (P.ell**2)]])        
         C = np.array([[1.0, 0.0]])
@@ -36,7 +36,7 @@ class ctrlStateFeedback:
         print(des_poles)
 
     def update(self, theta_r, x):
-        theta = x[0][0]
+        theta = x[0, 0]
         # compute feedback linearizing torque tau_fl
         tau_fl = P.m * P.g * (P.ell / 2.0) * np.cos(theta)
 
@@ -44,7 +44,7 @@ class ctrlStateFeedback:
         tau_tilde = -self.K @ x + self.kr * theta_r
 
         # compute total torque
-        tau = saturate(tau_fl + tau_tilde[0][0], P.tau_max)
+        tau = saturate(tau_fl + tau_tilde[0, 0], P.tau_max)
 
         return tau
 

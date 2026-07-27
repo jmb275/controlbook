@@ -32,12 +32,16 @@ class armAnimation:
         self.length=P.length
         self.width=P.width
         # Change the x,y axis limits
-        plt.axis([-2.0*P.length, 2.0*P.length, -2.0*P.length, 2.0*P.length])
+        plt.axis([-2.0*P.length, 
+                  2.0*P.length, 
+                  -2.0*P.length, 
+                  2.0*P.length])
         # Draw a base line
         plt.plot([0, P.length], [0, 0],'k--')
 
         # Create exit button
-        self.button_ax = plt.axes([0.8, 0.805, 0.1, 0.075])  # [left, bottom, width, height]
+        # [left, bottom, width, height]
+        self.button_ax = plt.axes([0.8, 0.805, 0.1, 0.075])  
         self.exit_button = Button(self.button_ax, label='Exit', color='r',)
         self.exit_button.label.set_fontweight('bold')
         self.exit_button.label.set_fontsize(18)
@@ -48,7 +52,7 @@ class armAnimation:
 
     def update(self, x):
         # Process inputs to function
-        theta = x[0][0]   # angle of arm, rads
+        theta = x[0, 0]   # angle of arm, rads
         X = [0, self.length*np.cos(theta)]  # X data points
         Y = [0, self.length*np.sin(theta)]  # Y data points
         # When the class is initialized, a line object will be

@@ -45,8 +45,8 @@ class ctrlLoopshape:
         # y_r is the referenced input
         # y is the current state
         phi_r = y_r
-        theta = y[0][0]
-        phi = y[1][0]
+        theta = y[0, 0]
+        phi = y[1, 0]
         # differentiate z and theta
         self.differentiatePhi(phi)
         self.differentiateTheta(theta)

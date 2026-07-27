@@ -1,4 +1,4 @@
-This repository is a (slightly) customized version of the [BYU Controlbook](https://github.com/byu-controlbook/controlbook_public/) intended for NC State University's CSC 495 course taught by Dr. Justin Bradley. Differences are limited to details and logistics rather than substance.
+This repository is a (slightly) customized version of the [BYU Controlbook](https://github.com/byu-controlbook/controlbook_public/) intended for NC State University's CSC/ECE/MAE 409/509 (Control Systems for Robotics) course taught by Dr. Justin Bradley. Differences are limited to details and logistics rather than substance.
 
 ---
 # **Setting up Controlbook Code and Python Environment**

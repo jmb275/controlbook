@@ -10,7 +10,12 @@ from ctrlPD import ctrlPD
 # instantiate satellite, controller, and reference classes
 satellite = satelliteDynamics(alpha=0.0)
 controller = ctrlPD()
-reference = signalGenerator(amplitude=15.0*np.pi/180.0,
+
+# for part a) 
+# reference = signalGenerator(amplitude=15.0*np.pi/180.0,
+#                             frequency=0.015)
+# for part f) 
+reference = signalGenerator(amplitude=30.0*np.pi/180.0,
                             frequency=0.015)
 
 

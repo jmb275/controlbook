@@ -34,10 +34,10 @@ class satelliteDynamics:
 
     def f(self, state, u):
         # Return xdot = f(x,u)
-        theta = state[0][0]
-        phi = state[1][0]
-        thetadot = state[2][0]
-        phidot = state[3][0]
+        theta = state[0, 0]
+        phi = state[1, 0]
+        thetadot = state[2, 0]
+        phidot = state[3, 0]
         tau = u
         # The equations of motion.
         M = np.array([[self.Js, 0],
@@ -45,16 +45,16 @@ class satelliteDynamics:
         C = np.array([[tau - self.b*(thetadot-phidot)-self.k*(theta-phi)],
                       [-self.b*(phidot-thetadot)-self.k*(phi-theta)]])
         tmp = np.linalg.inv(M) @ C
-        thetaddot = tmp[0][0]
-        phiddot = tmp[1][0]
+        thetaddot = tmp[0, 0]
+        phiddot = tmp[1, 0]
         # build xdot and return
         xdot = np.array([[thetadot], [phidot], [thetaddot], [phiddot]])
         return xdot
 
     def h(self):
         # return y = h(x)
-        theta = self.state[0][0]
-        phi = self.state[1][0]
+        theta = self.state[0, 0]
+        phi = self.state[1, 0]
         y = np.array([[theta], [phi]])
         return y
 
